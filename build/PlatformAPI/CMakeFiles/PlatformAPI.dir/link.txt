@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC    -shared -Wl,-soname,libPlatformAPI.so -o libPlatformAPI.so CMakeFiles/PlatformAPI.dir/PlatformAPI.cpp.o 

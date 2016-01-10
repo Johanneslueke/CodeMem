@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/johannes/CodeMem/PlatformAPI/PlatformAPI.cpp
+../CodeMem/include/Platform.h
+/home/johannes/CodeMem/CodeMem/include/Platform.h
+cstdlib
+-
+sys/mman.h
+-
+assert.h
+-
+iostream
+-
+

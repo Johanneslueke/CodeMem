@@ -1,0 +1,16 @@
+
+PlatformAPI:
+cmake_minimum_required(VERSION 2.8)
+project(PlatformAPI)
+
+set(SOURCE PlatformAPI.cpp)
+set(HEADER "../include/Platform.h")
+
+add_library(PlatformAPI ${SOURCE})
+
+target_include_directories(
+PlatformAPI PUBLIC
+"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+"$<INSTALL_INTERFACE:include>"
+)
+

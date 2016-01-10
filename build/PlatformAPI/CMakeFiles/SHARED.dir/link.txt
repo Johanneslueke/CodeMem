@@ -1,0 +1,2 @@
+/usr/bin/ar cr libSHARED.a  CMakeFiles/SHARED.dir/PlatformAPI.cpp.o
+/usr/bin/ranlib libSHARED.a
