@@ -93,8 +93,10 @@ int main(int argc, char** argv) {
         uint64 TotalStorageSize = (uint64) (Memory.PermanentStorageSize + Memory.TransientStorageSize);
         if ((Memory.PlatformAPI != nullptr)) {
             Memory.PermanentStorage = Memory.PlatformAPI->AllocateMemory(TotalStorageSize, BaseAddress);
+            if(Memory.PermanentStorage == nullptr)
+                throw std::bad_alloc();
         } else {
-            throw std::bad_alloc();
+            throw std::runtime_error("Platform API is not loaded!");
         }
 
 
@@ -149,7 +151,10 @@ int main(int argc, char** argv) {
 
         }
     } catch (std::bad_alloc& e) {
-        std::cerr << e.what();
+        std::cerr << e.what()<<std::endl;
+    }catch(std::runtime_error& e)
+    {
+        std::cerr<<e.what()<<std::endl;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -157,11 +162,6 @@ int main(int argc, char** argv) {
     ////////////////////////////////////////////////////////////////////////////
 
     int a[Megabytes(1)];
-    
-    for(int i=0;i<100;i++)
-    {
-        i[a] = 0;
-    }
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -195,3 +195,4 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
