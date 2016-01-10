@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     ////////////////////////////////////////////////////////////////////////////
     //
     ////////////////////////////////////////////////////////////////////////////
-    ConfigSettingString ProgramAPI_Location("PlatformAPI", "blah", "/media/johannes/SecretSoftware/Programms/Handmade/PlatformAPI/dist/Debug/GNU-Linux-x86/libPlatformAPI.so");
+    ConfigSettingString ProgramAPI_Location("PlatformAPI", "blah", "../build/libPlatformAPI.so");
     ConfigSettingInt StorageSize("PermanentStorage", "Size of this kind of Storage", Megabytes((uint64) 512));
     ConfigSettingInt StorageSizeTrasient("TransientStorage", "Size of this kind of Storage", Gigabytes((uint64) 1));
 
