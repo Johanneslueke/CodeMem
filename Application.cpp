@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     ////////////////////////////////////////////////////////////////////////////
     //
     ////////////////////////////////////////////////////////////////////////////
-    ConfigSettingString ProgramAPI_Location("PlatformAPI", "blah", "/media/johannes/SecretSoftware/Programms/Handmade/PlatformAPI/dist/Debug/GNU-Linux-x86/libPlatformAPI.so");
+    ConfigSettingString ProgramAPI_Location("PlatformAPI", "blah", "../build/libPlatformAPI.so");
     ConfigSettingInt StorageSize("PermanentStorage", "Size of this kind of Storage", Megabytes((uint64) 512));
     ConfigSettingInt StorageSizeTrasient("TransientStorage", "Size of this kind of Storage", Gigabytes((uint64) 1));
 
@@ -81,7 +81,8 @@ int main(int argc, char** argv) {
         API.QueueSteal = (platform_work_queue_steal*) dlsym(CodeHandle, "platform_work_queue_steal");
 
         Memory.PlatformAPI = &API;
-        std::cerr << " "<<" | API is loaded\n";
+       std::cerr << "API is loaded\n";
+
     } else {
         std::cerr << dlerror() << "\n";
     }
@@ -93,7 +94,7 @@ int main(int argc, char** argv) {
         //Ask OS for certain amount of Memory of TotalStorage Size
         uint64 TotalStorageSize = (uint64) (Memory.PermanentStorageSize + Memory.TransientStorageSize);
         if ((Memory.PlatformAPI != nullptr)) {
-            Memory.PermanentStorage = Memory.PlatformAPI->AllocateMemory(TotalStorageSize*Bytes(16), BaseAddress);
+            Memory.PermanentStorage = Memory.PlatformAPI->AllocateMemory(TotalStorageSize, BaseAddress);
             if(Memory.PermanentStorage == nullptr)
                 throw std::bad_alloc();
         } else {
