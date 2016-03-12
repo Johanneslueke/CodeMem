@@ -122,17 +122,6 @@ struct parallel_for_job_data {
 
 typedef void (*JobFunction)(platform_job*, const void*);
 
-typedef struct platform_job {
-    JobFunction function;
-    platform_job* parent;
-    std::atomic_int unfinishedJobs; // Atomic
-    char* padding;
-} Job;
-
-typedef struct platform_work_queue {
-    Job* jobqueue;
-} WorkQueue;
-
 
 ////////File operations/////////////////////////////////////////////////////////
 #define PLATFORM_GET_ALL_FILE_OF_TYPE_BEGIN(name) platform_file_group name(platform_file_type Type)
@@ -194,8 +183,25 @@ typedef PLATFORM_FUNC_JOB(platform_execute_Job);
 typedef PLATFORM_FUNC_JOB(platform_wait_Job);
 typedef PLATFORM_FUNC_JOB(platform_finish_Job);
 
+#define PLATFORM_CYCLECOUNT(name)  uint64_t name(void)
+typedef PLATFORM_CYCLECOUNT(platform_CycleCount);
+
 ////////////////////////////////////////////////////////////////////////////////
+typedef struct platform_job {
+    JobFunction function;
+    platform_job* parent;
+    std::atomic_int unfinishedJobs; 
+    char* padding;
+} Job;
+
+typedef struct platform_work_queue {
+    Job* jobqueue;
+} WorkQueue;
+
+
 typedef struct PLATFORM_API {
+    
+    //JobSystem
     platform_add_entry *AddEntry;
     platform_complete_all_work *CompleteAllWork;
 
@@ -213,12 +219,14 @@ typedef struct PLATFORM_API {
     platform_work_queue_steal* QueueSteal;
 
 
+    //Filesystem
     platform_get_all_files_of_type_begin *GetAllFilesOfTypeBegin;
     platform_get_all_files_of_type_end *GetAllFilesOfTypeEnd;
     platform_open_next_file *OpenNextFile;
     platform_read_data_from_file *ReadDataFromFile;
     platform_file_error *FileError;
 
+    //MemorySystem
     platform_allocate_memory *AllocateMemory;
     platform_deallocate_memory *DeallocateMemory;
 } platform_API;

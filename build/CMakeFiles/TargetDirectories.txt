@@ -1,2 +1,0 @@
-/home/johannes/CodeMem/build/CMakeFiles/CodeMem.dir
-/home/johannes/CodeMem/build/CMakeFiles/PlatformAPI.dir

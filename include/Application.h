@@ -46,7 +46,7 @@ typedef struct Application
     memory_arena    ApplicationMemoryArena;
 }app;
 
-struct task_with_memory
+struct task_with_memory // NOTE(Jojo): Need redesign
 {
     b32 BeingUsed;
     b32 DependsOnGameMode;
@@ -55,7 +55,7 @@ struct task_with_memory
     temporary_memory MemoryFlush;
 };
 
-struct transient_state
+struct transient_state //Note(Jojo): Should i keep this here?
 {
     bool32 IsInitialized;
     memory_arena TranArena;    

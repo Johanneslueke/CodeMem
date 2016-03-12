@@ -1,1 +1,0 @@
-/usr/bin/c++   --std=c++11 -Wall -ldl  -ldl CMakeFiles/CodeMem.dir/source/ConfigSettingString.cpp.o CMakeFiles/CodeMem.dir/source/ConfigSettingInt.cpp.o CMakeFiles/CodeMem.dir/Application.cpp.o  -o CodeMem -rdynamic -ldl 
