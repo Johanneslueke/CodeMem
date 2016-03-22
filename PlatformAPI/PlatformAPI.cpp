@@ -9,6 +9,8 @@
 #include <chrono>
 #include <ctime>
 
+//
+#include "MemoryManagerInternal.cpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////// http://blog.quasardb.net/a-portable-high-resolution-timestamp-in-c/ /////
@@ -205,7 +207,19 @@ namespace {
     ///////////////////////////////////////////////////////////////
     ////////////////MEMORY-OPERATIONS//////////////////////////////
 
-    extern "C" PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory) {
+   extern "C" PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory) {
+//TODO(jojo): Please implement
+        return NULL;
+    };
+
+
+    extern "C" PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory) {
+        
+//TODO(jojo): Please implement
+
+    };
+
+    extern "C" PLATFORM_ALLOCATE_MEMORY(platform_allocate_virtual_memory) {
 
         std::cerr << "Allocate Memory. Source: " << __FILE__ << " " << __LINE__ << "\n";
 
@@ -216,7 +230,7 @@ namespace {
     };
 
 
-    extern "C" PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory) {
+    extern "C" PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_virtual_memory) {
         int res = munmap(Memory, Size);
         std::cerr << "Deallocate Memory. Result:" << res << "| Source: " << __FILE__ << " " << __LINE__ << "\n";
 
@@ -231,6 +245,19 @@ namespace {
         arena->StartAdress = (MemoryAdress)(arena + sizeof(arena));
 
         return (void*) arena;
+    };
+
+    extern "C" PLATFORM_DEALLOCATE_MEMORY(platform_delete_arena) {
+        
+        MemoryArena* arena = (MemoryArena*) Memory;
+
+        arena->Used= 0;
+        arena->Size= 0;
+        arena->StartAdress = NULL;
+        //TODO(jojo): probably should iterate the the avaiable mem and set everything to Zero!!
+
+        Memory=NULL;
+
     };
 
 }
