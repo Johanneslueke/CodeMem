@@ -6,6 +6,12 @@
 
 #IncludeRegexTransform: 
 
+/home/johannes/CodeMem/PlatformAPI/MemoryManagerInternal.cpp
+vector
+-
+map
+-
+
 /home/johannes/CodeMem/PlatformAPI/PlatformAPI.cpp
 ../include/Platform.h
 /home/johannes/CodeMem/include/Platform.h
@@ -23,6 +29,8 @@ chrono
 -
 ctime
 -
+MemoryManagerInternal.cpp
+/home/johannes/CodeMem/PlatformAPI/MemoryManagerInternal.cpp
 
 /home/johannes/CodeMem/include/Platform.h
 atomic

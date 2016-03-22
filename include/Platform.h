@@ -128,6 +128,7 @@ struct  MemoryArena
     MemoryAdress StartAdress;
     memory_index Used;
     memory_index Size;
+    uint64 ID;
     /* data */
 };
 
@@ -215,6 +216,13 @@ typedef PLATFORM_ALLOCATE_MEMORY(platform_create_arena);
 * relativ to the starting adress.
 */ 
 typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_virtual_memory);
+
+/**
+* \name platform_deallocate_virtual_memory
+* \param void* Memory
+* \param memory_index Size
+*
+*/
 typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory);
 
 /**

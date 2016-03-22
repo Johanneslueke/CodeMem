@@ -244,6 +244,9 @@ namespace {
         arena->Size = Size;
         arena->StartAdress = (MemoryAdress)(arena + sizeof(arena));
 
+        RegisterNewArena(arena);
+
+
         return (void*) arena;
     };
 
@@ -254,7 +257,8 @@ namespace {
         arena->Used= 0;
         arena->Size= 0;
         arena->StartAdress = NULL;
-        //TODO(jojo): probably should iterate the the avaiable mem and set everything to Zero!!
+        DeleteArenaFromRegister(arena->ID);
+        //TODO(jojo): probably should iterate the the available mem and set everything to Zero!!
 
         Memory=NULL;
 
