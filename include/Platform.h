@@ -210,6 +210,17 @@ typedef PLATFORM_WORK_QUEUE_POP(platform_work_queue_steal);
 * adress for you.
 */ 
 typedef PLATFORM_ALLOCATE_MEMORY(platform_allocate_virtual_memory);
+
+/**
+* \name platform_allocate_virtual_memory
+* \param memory_index Size
+* \param void* Memory
+* 
+* This function reserves from within an arena memory and returns
+* the startadress of that block of memory.
+*
+* \return void*
+*/ 
 typedef PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory);
 
 /**

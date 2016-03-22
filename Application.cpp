@@ -109,10 +109,6 @@ int main(int argc, char** argv) {
                     Memory.PermanentStorageSize - sizeof (App),
                     (uint8*) Memory.PermanentStorage + sizeof (App));
 
-                
-
-                //            std::cerr << "WorkqueueHigh " << (((Job*) (WorkQueueHigh.Base + sizeof (platform_work_queue)))->padding) << "\n";
-                //            std::cerr << "In Memory     " << Memory.HighPriorityQueue + sizeof (platform_work_queue) << "\n\n";
 
                 Program->IsInitialized = true;
 
@@ -141,7 +137,7 @@ int main(int argc, char** argv) {
     std::cerr << "ApplicationMemoryArena Address    : " << (void*) Program->ApplicationMemoryArena.StartAdress << "\n";
     std::cerr << "ApplicationMemoryArena Size       : " << Program->ApplicationMemoryArena.Size / 1024 / 1024 << " MB\n";
     std::cerr << "ApplicationMemoryArena Used Memory: " << Program->ApplicationMemoryArena.Used / 1024 / 1024 << "MB\n";
-    std::cerr << "Sizeof App             Address: " << (void*) sizeof (App) << "\n";
+    std::cerr << "Sizeof App             Address: " << (void*) sizeof (App) << "\n\n";
 
 
     //std::cerr << ((platform_CycleCount*) dlsym(CodeHandle, "platform_CycleCount"))()<<"\n";

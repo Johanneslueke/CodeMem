@@ -208,8 +208,16 @@ namespace {
     ////////////////MEMORY-OPERATIONS//////////////////////////////
 
    extern "C" PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory) {
-//TODO(jojo): Please implement
-        return NULL;
+        MemoryArena* arena = (MemoryArena*) adress ;
+        if(arena->Used != 0)
+        {
+            arena->Used += Size;
+            return (arena->StartAdress+arena->Used);  
+        }
+
+        arena->Used += Size;
+        return arena->StartAdress;
+        
     };
 
 
