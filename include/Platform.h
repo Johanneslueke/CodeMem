@@ -24,6 +24,8 @@
 #include <vector>
 #include <functional>
 
+//////////////////////////////////////////////////////////////////////////
+///////////////////////TYPEDEFS///////////////////////////////////////////
 typedef int8_t int8;
 typedef int16_t int16;
 typedef int32_t int32;
@@ -61,6 +63,9 @@ typedef real64 r64;
 
 typedef uint8* MemoryAdress;
 
+///////////////////////////////////////////////////////////////////////////
+/////////////////////Pre-Processor Macros//////////////////////////////////
+
 #define PointerToU32(Pointer) ((u32)(memory_index)(Pointer))
 
 #define Bytes(Value)     (Value)
@@ -83,6 +88,13 @@ typedef uint8* MemoryAdress;
          {std::cerr<<"Error: "<<__FILE__<<"->"<<__LINE__<<" "<<"\n";}
 #endif
 
+////////////////////////////////////////////////////////////////////////
+///////////////////Structures//////////////////////////////////////////
+
+struct platform_work_queue;
+struct platform_job;
+struct PLATFORM_API;
+
 typedef struct platform_file_handle {
     b32 NoErrors;
     void *Platform;
@@ -101,8 +113,7 @@ typedef enum platform_file_type {
 } platform_file_type;
 
 
-struct platform_work_queue;
-struct platform_job;
+
 
 template <typename T, typename S>
 struct parallel_for_job_data {
@@ -123,17 +134,37 @@ struct parallel_for_job_data {
 };
 
 
-struct  MemoryArena
+typedef struct  MemoryArena
 {
     MemoryAdress StartAdress;
     memory_index Used;
     memory_index Size;
     uint64 ID;
     /* data */
-};
+}Arena;
+
+typedef struct ApplicationMemory
+{
+    uint64 PermanentStorageSize;
+    void *PermanentStorage; // NOTE(jojo): REQUIRED to be cleared to zero at startup
+
+    b32 ExecutableReloaded;
+    PLATFORM_API* PlatformAPI;
+} AppMemory;
+
+typedef struct Application
+{
+    bool            IsInitialized;
+    PLATFORM_API*   Platform;
+    MemoryArena     ApplicationMemoryArena;
+    AppMemory       ApplicationManagedMemory;
+}App;
 
 typedef void (*JobFunction)(platform_job*, const void*);
 
+/////////////////////////////////////////////////////////////////////////
+/////////////////////Function Declarations//////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 ////////File operations/////////////////////////////////////////////////////////
 #define PLATFORM_GET_ALL_FILE_OF_TYPE_BEGIN(name) platform_file_group name(platform_file_type Type)

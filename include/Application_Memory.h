@@ -95,12 +95,11 @@ ZeroSize(memory_index Size, void *Ptr)
 }
 
 inline void
-InitializeArena(memory_arena *Arena, memory_index Size, void *Base)
+InitializeArena(MemoryArena *Arena, memory_index Size, void *Base)
 {
     Arena->Size = Size;
-    Arena->Base = (uint8 *)Base;
+    Arena->StartAdress = (uint8 *)Base;
     Arena->Used = 0;
-    Arena->TempCount = 0;
 }
 
 inline memory_index
@@ -279,9 +278,9 @@ EndTemporaryMemory(temporary_memory TempMem)
 }
 
 inline void
-Clear(memory_arena *Arena)
+Clear(MemoryArena* Arena)
 {
-    InitializeArena(Arena, Arena->Size, Arena->Base);
+    InitializeArena(Arena, Arena->Size, Arena->StartAdress);
 }
 
 inline void

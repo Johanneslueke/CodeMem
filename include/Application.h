@@ -21,62 +21,6 @@ using namespace std;
 
 
 
-typedef struct ApplicationMemory
-{
-    uint64 PermanentStorageSize;
-    void *PermanentStorage; // NOTE(jojo): REQUIRED to be cleared to zero at startup
-
-    uint64 TransientStorageSize;
-    void *TransientStorage; // NOTE(jojo): REQUIRED to be cleared to zero at startup
-
-    uint64 DebugStorageSize;
-    void *DebugStorage; // NOTE(jojo): REQUIRED to be cleared to zero at startup
-
-    WorkQueue *HighPriorityQueue;
-    WorkQueue *LowPriorityQueue;
-
-    b32 ExecutableReloaded;
-    platform_API* PlatformAPI;
-} app_memory;
-
-typedef struct Application
-{
-    bool            IsInitialized;
-    platform_API*   Platform;
-    memory_arena    ApplicationMemoryArena;
-}app;
-
-struct task_with_memory // NOTE(Jojo): Need redesign
-{
-    b32 BeingUsed;
-    b32 DependsOnGameMode;
-    memory_arena Arena;
-
-    temporary_memory MemoryFlush;
-};
-
-struct transient_state //Note(Jojo): Should i keep this here?
-{
-    bool32 IsInitialized;
-    memory_arena TranArena;    
-
-    task_with_memory Tasks[4];
-
-    //game_assets *Assets;
-
-    uint32 GroundBufferCount;
-    //ground_buffer *GroundBuffers;
-    platform_work_queue *HighPriorityQueue;
-    platform_work_queue *LowPriorityQueue;
-
-};
-
-static platform_API Platform;
-
-static task_with_memory *BeginTaskWithMemory(transient_state *TranState, b32 DependsOnGameMode);
-static void EndTaskWithMemory(task_with_memory *Task);
-
-
 
 bool LinuxCopyFile(const std::string& SourceSOName, const std::string& TempSOName);
 timespec LinuxGetLastWriteTime(const std::string& filename);
