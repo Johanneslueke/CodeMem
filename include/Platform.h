@@ -165,13 +165,67 @@ typedef PLATFORM_WORK_QUEUE_POP(platform_work_queue_steal);
 
 ////////Memory operations///////////////////////////////////////////////////////
 #define PLATFORM_ALLOCATE_MEMORY(name) void* name(memory_index Size,void* adress) 
+/**
+* \name platform_allocate_virtual_memory
+* \param memory_index Size
+* \param void* Memory
+* 
+* This function is wraps around an OS function which allocate virtual memory
+* from the system i.e under the linux platform mmap does the job. The void*
+* pointer is the start adress of the memory you want to allocate and memory_index
+* is an typedef for an std::size_t and tells the OS to which point it should allocate
+* new memory. If the given pointer to void an nullptr the OS choose randomly the start
+* adress for you.
+*/ 
 typedef PLATFORM_ALLOCATE_MEMORY(platform_allocate_virtual_memory);
 typedef PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory);
+
+/**
+* \name platform_create_arena
+* \param memory_index Size
+* \param void* Memory
+*
+* This function creates an arena from any given startadress. The startadress
+* cannot be an nullptr and must point into pre-allocated memory namespace 
+* i.e. with "platform_allocate_virtual_memory". It does NOT check if the available
+* pre-allocated memory does fit the requested size parameter. If the requested Size
+* of the arena is bigger than the available pre-allocated memory it will result an 
+* an Segmentation Fault!!!!
+*
+* 
+* It returns an pointer of void which must be casted into a struct of type MemoryArena.
+* The returned MemoryArena actually takes space from the requested memory. This results 
+* that the requested MemoryArena is technically slightly bigger. The effectiv allocated
+* arena size is equal to (requested Size)+(sizeof(struct MemoryArena)).
+*
+* \void* aka struct to MemoryArena 
+*/
 typedef PLATFORM_ALLOCATE_MEMORY(platform_create_arena);
 
-#define PLATFORM_DEALLOCATE_MEMORY(name) void name(void *Memory,memory_index Size) 
+#define PLATFORM_DEALLOCATE_MEMORY(name) void name(void *Memory,memory_index Size)
+/**
+* \name platform_deallocate_virtual_memory
+* \param void* Memory
+* \param memory_index Size
+* 
+* This function is wraps around an OS function which deallocate virtual memory
+* from the system i.e under the linux platform munmap does the job. The void*
+* pointer is the start adress of memory you want to deallocate and memory_index
+* is an typedef for an std::size_t and to which point relativ to the starting adress
+* should be deallocated. 
+*/ 
 typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_virtual_memory);
 typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory);
+
+/**
+* \name platform_delete_arena
+* \param void* Memory
+* \param memory_index Size
+* 
+* This function takes an struct of type MemoryArena casted into an pointer of
+* void. The second parameter is useless. After executing this Function the given
+* pointer of void is invalid and cannot be used afterwards as a MemoryArena.
+*/ 
 typedef PLATFORM_DEALLOCATE_MEMORY(platform__delete_arena);
 
 typedef void platform_add_entry(platform_work_queue *Queue, platform_work_queue_callback *Callback, char *Data);
