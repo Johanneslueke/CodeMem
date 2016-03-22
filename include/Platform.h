@@ -59,6 +59,8 @@ typedef uint64 u64;
 typedef real32 r32;
 typedef real64 r64;
 
+typedef uint8* MemoryAdress;
+
 #define PointerToU32(Pointer) ((u32)(memory_index)(Pointer))
 
 #define Bytes(Value)     (Value)
@@ -120,6 +122,15 @@ struct parallel_for_job_data {
     SplitterType splitter;
 };
 
+
+struct  MemoryArena
+{
+    MemoryAdress StartAdress;
+    memory_index Used;
+    memory_index Size;
+    /* data */
+};
+
 typedef void (*JobFunction)(platform_job*, const void*);
 
 
@@ -156,10 +167,12 @@ typedef PLATFORM_WORK_QUEUE_POP(platform_work_queue_steal);
 #define PLATFORM_ALLOCATE_MEMORY(name) void* name(memory_index Size,void* adress) 
 typedef PLATFORM_ALLOCATE_MEMORY(platform_allocate_virtual_memory);
 typedef PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory);
+typedef PLATFORM_ALLOCATE_MEMORY(platform_create_arena);
 
 #define PLATFORM_DEALLOCATE_MEMORY(name) void name(void *Memory,memory_index Size) 
 typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_virtual_memory);
 typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory);
+typedef PLATFORM_DEALLOCATE_MEMORY(platform__delete_arena);
 
 typedef void platform_add_entry(platform_work_queue *Queue, platform_work_queue_callback *Callback, char *Data);
 typedef void platform_complete_all_work(platform_work_queue *Queue);

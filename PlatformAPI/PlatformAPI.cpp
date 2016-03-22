@@ -136,15 +136,6 @@ namespace {
         return (new hiresclock<Clock>)->now();;
     }
 
-    extern "C" PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory) {
-
-        std::cerr << "Allocate Memory. Source: " << __FILE__ << " " << __LINE__ << "\n";
-
-        return mmap(adress, Size,
-                PROT_READ | PROT_WRITE,
-                MAP_ANON | MAP_PRIVATE,
-                -1, 0);
-    };
 
     extern "C" PLATFORM_ALLOCATE_JOB(platform_allocate_Job) {
 
@@ -168,13 +159,6 @@ namespace {
         //        job->unfinishedJobs = 1;
 
         //        return job;
-    };
-
-    extern "C" PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory) {
-        int res = munmap(Memory, Size);
-
-        std::cerr << "Deallocate Memory. Result:" << res << "| Source: " << __FILE__ << " " << __LINE__ << "\n";
-
     };
 
     extern "C" PLATFORM_FUNC_JOB(platform_execute_Job) {
@@ -217,4 +201,36 @@ namespace {
     extern "C" PLATFORM_WORK_QUEUE_POP(platform_work_queue_steal) {
 
     };
+
+    ///////////////////////////////////////////////////////////////
+    ////////////////MEMORY-OPERATIONS//////////////////////////////
+
+    extern "C" PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory) {
+
+        std::cerr << "Allocate Memory. Source: " << __FILE__ << " " << __LINE__ << "\n";
+
+        return mmap(adress, Size,
+                PROT_READ | PROT_WRITE,
+                MAP_ANON | MAP_PRIVATE,
+                -1, 0);
+    };
+
+
+    extern "C" PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory) {
+        int res = munmap(Memory, Size);
+        std::cerr << "Deallocate Memory. Result:" << res << "| Source: " << __FILE__ << " " << __LINE__ << "\n";
+
+    };
+
+    extern "C" PLATFORM_ALLOCATE_MEMORY(platform_create_arena)
+    {
+        MemoryArena* arena = (MemoryArena*) adress;
+
+        arena->Used = 0;
+        arena->Size = Size;
+        arena->StartAdress = (MemoryAdress)(arena + sizeof(arena));
+
+        return (void*) arena;
+    };
+
 }
