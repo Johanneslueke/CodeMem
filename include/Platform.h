@@ -170,11 +170,11 @@ typedef PLATFORM_WORK_QUEUE_POP(platform_work_queue_steal);
 * \param memory_index Size
 * \param void* Memory
 * 
-* This function is wraps around an OS function which allocate virtual memory
-* from the system i.e under the linux platform mmap does the job. The void*
+* This function wraps around an OS function which allocate virtual memory
+* from the system i.e. under the linux platform "mmap" does the job. The void* Memory
 * pointer is the start adress of the memory you want to allocate and memory_index
 * is an typedef for an std::size_t and tells the OS to which point it should allocate
-* new memory. If the given pointer to void an nullptr the OS choose randomly the start
+* new memory. If the given pointer to void is an nullptr, the OS choose randomly the start
 * adress for you.
 */ 
 typedef PLATFORM_ALLOCATE_MEMORY(platform_allocate_virtual_memory);
@@ -190,7 +190,7 @@ typedef PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory);
 * i.e. with "platform_allocate_virtual_memory". It does NOT check if the available
 * pre-allocated memory does fit the requested size parameter. If the requested Size
 * of the arena is bigger than the available pre-allocated memory it will result an 
-* an Segmentation Fault!!!!
+* an Segmentation Fault later on!!!!
 *
 * 
 * It returns an pointer of void which must be casted into a struct of type MemoryArena.
@@ -208,11 +208,11 @@ typedef PLATFORM_ALLOCATE_MEMORY(platform_create_arena);
 * \param void* Memory
 * \param memory_index Size
 * 
-* This function is wraps around an OS function which deallocate virtual memory
-* from the system i.e under the linux platform munmap does the job. The void*
+* This function wraps around an OS function which deallocate virtual memory
+* from the system i.e under the linux platform "munmap" does the job. The void*
 * pointer is the start adress of memory you want to deallocate and memory_index
-* is an typedef for an std::size_t and to which point relativ to the starting adress
-* should be deallocated. 
+* is an typedef for an std::size_t which determined last adress of the memory
+* relativ to the starting adress.
 */ 
 typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_virtual_memory);
 typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory);
@@ -227,6 +227,7 @@ typedef PLATFORM_DEALLOCATE_MEMORY(platform_deallocate_memory);
 * pointer of void is invalid and cannot be used afterwards as a MemoryArena.
 */ 
 typedef PLATFORM_DEALLOCATE_MEMORY(platform__delete_arena);
+
 
 typedef void platform_add_entry(platform_work_queue *Queue, platform_work_queue_callback *Callback, char *Data);
 typedef void platform_complete_all_work(platform_work_queue *Queue);
