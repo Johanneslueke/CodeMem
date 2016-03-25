@@ -62,11 +62,18 @@ int main(int argc, char** argv) {
     void* CodeHandle = nullptr;
 
     if ((CodeHandle = dlopen(*head_s->FindSetting("PlatformAPI"), RTLD_LAZY)) != nullptr) {
-        API.AllocateMemory = (platform_allocate_memory*) dlsym(CodeHandle, "platform_allocate_virtual_memory");
+
+        API.AllocateMemory = (platform_allocate_memory*) dlsym(CodeHandle, "platform_allocate_memory");
+        API.DeallocateMemory = (platform_deallocate_memory*) dlsym(CodeHandle, "platform_deallocate_memory");
+
+        API.AllocVirtMem = (platform_allocate_memory*) dlsym(CodeHandle, "platform_allocate_virtual_memory");
+        API.DeallocVirtMem = (platform_deallocate_memory*) dlsym(CodeHandle, "platform_deallocate_virtual_memory");
+
+        API.InitializeArena = (platform_create_arena*) dlsym(CodeHandle, "platform_create_arena");
+
         API.Allocate_Job = (platform_allocate_Job*) dlsym(CodeHandle, "platform_allocate_Job");
         API.CreateJob = (platform_create_Job*) dlsym(CodeHandle, "platform_create_Job");
         API.CreateJobAsChild = (platform_create_Job_as_Child*) dlsym(CodeHandle, "platform_create_Job_as_Child");
-        API.DeallocateMemory = (platform_deallocate_memory*) dlsym(CodeHandle, "platform_deallocate_virtual_memory");
         API.ExecuteJob = (platform_execute_Job*) dlsym(CodeHandle, "platform_execute_Job");
         API.FinishJob = (platform_finish_Job*) dlsym(CodeHandle, "platform_finish_Job");
         API.GetJob = (platform_get_Job*) dlsym(CodeHandle, "platform_get_Job");
@@ -90,24 +97,29 @@ int main(int argc, char** argv) {
         //Ask OS for certain amount of Memory of TotalStorage Size
         uint64 TotalStorageSize = (uint64) (Memory.PermanentStorageSize);
         if ((Memory.PlatformAPI != nullptr)) {
-            Memory.PermanentStorage = Memory.PlatformAPI->AllocateMemory(TotalStorageSize, BaseAddress);
+            Memory.PermanentStorage = Memory.PlatformAPI->AllocVirtMem(TotalStorageSize, BaseAddress);
             if(Memory.PermanentStorage == nullptr)
                 throw std::bad_alloc();
         } else {
-            throw std::runtime_error("Platform API is not loaded!");
+            throw std::runtime_error("Platform API is apparently not loaded!");
         }
 
 
-        //Check for validity of new memory
+        std::cerr<<"- "<<Memory.PermanentStorage<<"\n";
+        //Check for validity of new memory (a second time is always better)
         Assert(Memory.PermanentStorage);
 
         //The first few bits are exclusive for the app structure
         Program = (App *) Memory.PermanentStorage;
+        Program->Platform = &API;
         Program->IsInitialized = false;
+
         if (!Program->IsInitialized) {
-            InitializeArena(&Program->ApplicationMemoryArena,
+
+            Assert(Program->Platform->InitializeArena);
+            Program->Platform->InitializeArena(
                     Memory.PermanentStorageSize - sizeof (App),
-                    (uint8*) Memory.PermanentStorage + sizeof (App));
+                    &Program->ApplicationMemoryArena);
 
 
                 Program->IsInitialized = true;
@@ -127,6 +139,10 @@ int main(int argc, char** argv) {
     ////////////////////////////////////////////////////////////////////////////
 
     int a[Megabytes(1)];
+    void* p = Program->Platform->AllocateMemory({Megabytes(1)},&Program->ApplicationMemoryArena);
+    void* p2 = Program->Platform->AllocateMemory({Megabytes(1)},&Program->ApplicationMemoryArena);
+    std::cerr<<"p                                   : "<<p<<"\n";
+    std::cerr<<"p2                                  : "<<p2<<"\n";
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -137,7 +153,7 @@ int main(int argc, char** argv) {
     std::cerr << "ApplicationMemoryArena Address    : " << (void*) Program->ApplicationMemoryArena.StartAdress << "\n";
     std::cerr << "ApplicationMemoryArena Size       : " << Program->ApplicationMemoryArena.Size / 1024 / 1024 << " MB\n";
     std::cerr << "ApplicationMemoryArena Used Memory: " << Program->ApplicationMemoryArena.Used / 1024 / 1024 << "MB\n";
-    std::cerr << "Sizeof App             Address: " << (void*) sizeof (App) << "\n\n";
+    std::cerr << "Sizeof App             Address    : " << (void*) sizeof (App) << "\n\n";
 
 
     //std::cerr << ((platform_CycleCount*) dlsym(CodeHandle, "platform_CycleCount"))()<<"\n";
@@ -149,7 +165,7 @@ int main(int argc, char** argv) {
     ////////////////////////////////////////////////////////////////////////////
     //Clear up the application
     ////////////////////////////////////////////////////////////////////////////
-    Memory.PlatformAPI->DeallocateMemory(Memory.PermanentStorage, Memory.PermanentStorageSize);
+    Memory.PlatformAPI->DeallocVirtMem(Memory.PermanentStorage, Memory.PermanentStorageSize);
     Memory.PlatformAPI = nullptr;
     dlclose(CodeHandle);
 

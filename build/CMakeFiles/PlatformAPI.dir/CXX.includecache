@@ -11,6 +11,10 @@ vector
 -
 map
 -
+string
+-
+iostream
+-
 
 /home/johannes/CodeMem/PlatformAPI/PlatformAPI.cpp
 ../include/Platform.h
@@ -46,6 +50,8 @@ float.h
 ctime
 -
 vector
+-
+map
 -
 functional
 -

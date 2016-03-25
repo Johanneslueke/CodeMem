@@ -208,10 +208,14 @@ namespace {
     ////////////////MEMORY-OPERATIONS//////////////////////////////
 
    extern "C" PLATFORM_ALLOCATE_MEMORY(platform_allocate_memory) {
+    std::cerr<<"--platform_allocate_memory\n";
+    
         MemoryArena* arena = (MemoryArena*) adress ;
         if(arena->Used != 0)
         {
             arena->Used += Size;
+            MemoryAdress start = arena->StartAdress+arena->Used;
+            AddNewMemoryChunk(arena,start,Size);
             return (arena->StartAdress+arena->Used);  
         }
 
@@ -244,8 +248,10 @@ namespace {
 
     };
 
+
     extern "C" PLATFORM_ALLOCATE_MEMORY(platform_create_arena)
     {
+        std::cerr<<"-- platform_create_arena\n";
         MemoryArena* arena = (MemoryArena*) adress;
 
         arena->Used = 0;

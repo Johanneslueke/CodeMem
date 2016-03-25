@@ -22,6 +22,7 @@
 #include <float.h>
 #include <ctime>
 #include <vector>
+#include <map>
 #include <functional>
 
 //////////////////////////////////////////////////////////////////////////
@@ -81,7 +82,7 @@ typedef uint8* MemoryAdress;
 #define Align8(Value) ((Value + 7) & ~7)
 #define Align16(Value) ((Value + 15) & ~15)
 
-#ifdef DEBUG
+#ifndef DEBUG
 #define Assert(Expression) if(!(Expression)) {*(int *)0 = 0;}
 #else
 #define Assert(Expression) if(!(Expression)) \
@@ -133,14 +134,27 @@ struct parallel_for_job_data {
     SplitterType splitter;
 };
 
+typedef struct MemoryChunk
+{
+    MemoryAdress StartAdress;
+    memory_index ChunkSize;
+    /* data */
+
+    MemoryChunk(MemoryAdress a,memory_index s) : StartAdress(a),ChunkSize(s){};
+};
 
 typedef struct  MemoryArena
 {
     MemoryAdress StartAdress;
     memory_index Used;
     memory_index Size;
+    std::map<std::string, MemoryChunk*> MemoryChunks;
     uint64 ID;
     /* data */
+
+    MemoryArena():MemoryChunks()
+    {};
+    
 }Arena;
 
 typedef struct ApplicationMemory
@@ -345,8 +359,12 @@ typedef struct PLATFORM_API {
     platform_file_error *FileError;
 
     //MemorySystem
+    platform_allocate_virtual_memory* AllocVirtMem;
+    platform_deallocate_virtual_memory* DeallocVirtMem;
     platform_allocate_memory *AllocateMemory;
     platform_deallocate_memory *DeallocateMemory;
+
+    platform_create_arena* InitializeArena;
 } platform_API;
 
 inline u32 GetThreadID(void) {
